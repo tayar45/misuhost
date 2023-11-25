@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -18,5 +19,22 @@ use Illuminate\Support\Facades\View;
 
 
 Route::get('/', function () {
-    return View::make('layouts.app');;
-});
+    return view('home');
+})->name('home');
+
+Route::get('/login', [UserController::class,'loginPage'])->name('loginPage');
+Route::post('/login', [UserController::class,'login'])->name('login');
+Route::get('/signup', [UserController::class,'create'])->name('signup');
+Route::post('/signup', [UserController::class,'store'])->name('store');
+Route::get('/logout', [UserController::class,'logout'])->name('logout');
+
+
+Route::get('auth/google', [SocialiteController::class,'redirectToGoogle']);
+Route::get('auth/google/callback', [SocialiteController::class,'handleGoogleCallback']);
+
+
+Route::get('/{id}', [UserController::class,'show'])->name('show')->middleware('auth');
+
+Route::get('/{id}/settings', [UserController::class,'edit'])->name('edit')->middleware('auth');
+
+Route::put('/{id}', [UserController::class,'update'])->name('update')->middleware('auth');
